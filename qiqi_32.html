@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>🎂 生日快乐 · 我的爱人</title>
+    <style>
+        /* ===== 全局重置 & 字体 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fce4ec;
+            padding: 16px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== 背景渐变 ===== */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #fdf1f5 0%, #fce4ec 35%, #f8d7e0 65%, #f3e0e9 100%);
+            z-index: -2;
+        }
+
+        .bg-blur-circle {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .bg-blur-circle:nth-child(1) {
+            width: 450px;
+            height: 450px;
+            top: -150px;
+            right: -100px;
+            background: #ffb3c6;
+        }
+        .bg-blur-circle:nth-child(2) {
+            width: 380px;
+            height: 380px;
+            bottom: -120px;
+            left: -80px;
+            background: #fbc8d9;
+        }
+        .bg-blur-circle:nth-child(3) {
+            width: 220px;
+            height: 220px;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f8d5e0;
+        }
+
+        /* ===== 主卡片 ===== */
+        .card {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 48px 48px 40px 40px;
+            padding: 36px 28px 32px;
+            box-shadow:
+                0 24px 64px rgba(255, 120, 160, 0.20),
+                0 8px 28px rgba(255, 160, 190, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            z-index: 1;
+        }
+
+        /* ===== 顶部装饰 ===== */
+        .header-deco {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+            font-size: 30px;
+            letter-spacing: 4px;
+            opacity: 0.75;
+        }
+        .header-deco span {
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+        .header-deco span:nth-child(2) { animation-delay: 0.3s; }
+        .header-deco span:nth-child(3) { animation-delay: 0.6s; }
+        .header-deco span:nth-child(4) { animation-delay: 0.9s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.05); }
+        }
+
+        /* ===== 蛋糕 & 爱心 ===== */
+        .cake-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            margin: 4px 0 6px;
+        }
+        .cake-icon {
+            font-size: 68px;
+            line-height: 1.2;
+            filter: drop-shadow(0 8px 18px rgba(255, 130, 170, 0.25));
+            animation: pop 1.2s ease-out;
+        }
+        .heart-icon {
+            font-size: 36px;
+            color: #f28b9e;
+            animation: heartbeat 1.8s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(255, 80, 120, 0.2));
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.25); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.2); }
+            60% { transform: scale(1); }
+        }
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ===== 标题 ===== */
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #5d3a4b;
+            margin: 8px 0 10px;
+            letter-spacing: 2px;
+            line-height: 1.4;
+            position: relative;
+        }
+        .title::after {
+            content: '💕';
+            display: block;
+            font-size: 22px;
+            margin-top: 6px;
+            opacity: 0.6;
+        }
+
+        /* ===== 编辑提示 ===== */
+        .editable-hint {
+            text-align: center;
+            font-size: 12px;
+            color: #b895a3;
+            margin-top: -2px;
+            margin-bottom: 18px;
+            opacity: 0.5;
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+        .editable-hint i {
+            font-style: normal;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 2px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* ===== 内容区 ===== */
+        .content-area {
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 28px;
+            padding: 16px;
+            margin: 16px 0 18px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.25s ease;
+            min-height: 120px;
+        }
+        .content-area:focus-within {
+            background: rgba(255, 255, 255, 0.65);
+            box-shadow: 0 0 0 3px rgba(255, 150, 180, 0.25);
+            border-color: rgba(255, 150, 180, 0.4);
+        }
+        .content-area [contenteditable="true"] {
+            outline: none;
+            font-size: 17px;
+            line-height: 1.9;
+            color: #4a3440;
+            font-weight: 400;
+            word-break: break-word;
+            min-height: 60px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .content-area [contenteditable="true"]:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .content-area [contenteditable="true"]:empty::before {
+            content: '✏️ 写下你对她的甜蜜祝福…';
+            color: #c5aab5;
+            font-weight: 300;
+        }
+
+        /* ===== 底部信息 ===== */
+        .footer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding: 0 6px;
+            font-size: 15px;
+            color: #9a7a87;
+            letter-spacing: 0.5px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .footer-info .signature {
+            font-weight: 500;
+            color: #7a5a67;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-info .signature [contenteditable="true"] {
+            outline: none;
+            min-width: 50px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+        .footer-info .signature [contenteditable="true"]:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .footer-info .signature [contenteditable="true"]:focus {
+            border-bottom-color: #f5b7c7;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .footer-info .signature [contenteditable="true"]:empty::before {
+            content: '你的老公';
+            color: #c5aab5;
+            font-weight: 300;
+        }
+        .footer-info .date {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 4px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: #8a6b78;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .footer-info .date [contenteditable="true"] {
+            outline: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .footer-info .date [contenteditable="true"]:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .footer-info .date [contenteditable="true"]:empty::before {
+            content: '2026.09.07';
+            color: #c5aab5;
+            font-weight: 300;
+        }
+
+        /* ===== 底部装饰 ===== */
+        .bottom-deco {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 22px;
+            letter-spacing: 12px;
+            color: rgba(255, 150, 180, 0.5);
+            user-select: none;
+        }
+
+        /* ===== 音乐播放器控件 ===== */
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 28px rgba(255, 120, 160, 0.25), 0 2px 8px rgba(255, 120, 160, 0.12);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .music-control:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 36px rgba(255, 120, 160, 0.35);
+        }
+        .music-control:active {
+            transform: scale(0.92);
+        }
+        .music-control .icon {
+            font-size: 28px;
+            line-height: 1;
+            transition: all 0.3s ease;
+        }
+        .music-control .icon.mute {
+            opacity: 0.4;
+        }
+        /* 播放时旋转动画 */
+        .music-control.playing .icon {
+            animation: spin 4s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* 音符光晕 */
+        .music-control::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: conic-gradient(from 0deg, #ff9eb5, #fbc8d9, #ff9eb5, #fbc8d9, #ff9eb5);
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .music-control.playing::after {
+            opacity: 1;
+            animation: spin 3s linear infinite;
+        }
+
+        /* ===== 漂浮粒子 ===== */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            font-size: 22px;
+            opacity: 0.3;
+            animation: drift linear infinite;
+            user-select: none;
+            will-change: transform;
+        }
+        @keyframes drift {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                opacity: 0.1;
+            }
+            15% { opacity: 0.5; }
+            85% { opacity: 0.5; }
+            100% {
+                transform: translateY(-20vh) rotate(720deg) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 480px) {
+            .card {
+                padding: 28px 18px 24px;
+                border-radius: 36px 36px 32px 32px;
+            }
+            .cake-icon { font-size: 56px; }
+            .heart-icon { font-size: 30px; }
+            .title { font-size: 24px; }
+            .content-area {
+                padding: 18px 16px 16px;
+                min-height: 100px;
+            }
+            .content-area [contenteditable="true"] {
+                font-size: 16px;
+                line-height: 1.7;
+            }
+            .footer-info {
+                font-size: 14px;
+                align-items: stretch;
+                gap: 6px;
+            }
+            .footer-info .date {
+                text-align: center;
+                padding: 4px 14px;
+            }
+            .header-deco {
+                font-size: 24px;
+                gap: 8px;
+            }
+            .bottom-deco {
+                font-size: 18px;
+                letter-spacing: 10px;
+                margin-top: 16px;
+            }
+            .music-control {
+                bottom: 20px;
+                right: 20px;
+                width: 52px;
+                height: 52px;
+            }
+            .music-control .icon {
+                font-size: 24px;
+            }
+        }
+        @media (max-width: 380px) {
+            .card {
+                padding: 20px 14px 18px;
+            }
+            .cake-icon { font-size: 46px; }
+            .heart-icon { font-size: 24px; }
+            .title { font-size: 20px; }
+            .content-area [contenteditable="true"] {
+                font-size: 15px;
+            }
+            .music-control {
+                bottom: 16px;
+                right: 16px;
+                width: 46px;
+                height: 46px;
+            }
+            .music-control .icon {
+                font-size: 20px;
+            }
+        }
+
+        /* ===== 通用 ===== */
+        [contenteditable="true"] {
+            cursor: text;
+            transition: all 0.2s;
+        }
+        [contenteditable="true"]:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        ::selection {
+            background: #fbc8d9;
+            color: #3d2b33;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f5c0d0;
+            border-radius: 10px;
+        }
+
+        /* ===== 加载提示 ===== */
+        .audio-loading {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            font-size: 12px;
+            color: #b895a3;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 4px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 99;
+        }
+        .audio-loading.show {
+            opacity: 1;
+        }
+        @media (max-width: 480px) {
+            .audio-loading {
+                bottom: 82px;
+                right: 20px;
+                font-size: 11px;
+                padding: 3px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 背景层 ===== -->
+    <div class="bg-gradient"></div>
+    <div class="bg-blur-circle"></div>
+    <div class="bg-blur-circle"></div>
+    <div class="bg-blur-circle"></div>
+
+    <!-- ===== 漂浮粒子 ===== -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- ===== 音频加载状态 ===== -->
+    <!-- <div class="audio-loading" id="audioLoading">🎵 加载音乐中…</div> -->
+
+    <!-- ===== 音乐播放按钮 ===== -->
+    <!-- <div class="music-control" id="musicControl" title="点击播放 / 暂停">
+        <span class="icon" id="musicIcon">🎵</span>
+    </div> -->
+
+    <!-- ===== 主卡片 ===== -->
+    <div class="card">
+
+        <div class="header-deco">
+            <span>❤️</span>
+            <span>✨</span>
+            <span>💕</span>
+            <span>✨</span>
+            <span>❤️</span>
+        </div>
+
+        <div class="cake-area">
+            <span class="heart-icon">❤️</span>
+            <span class="cake-icon">🎂</span>
+            <span class="heart-icon">❤️</span>
+        </div>
+
+        <div class="title" spellcheck="false">
+           🌹 生日快乐，琪琪 🌹
+        </div>
+        <div class="content-area">
+            <div spellcheck="false" class="editable-placeholder">
+                在这特别的日子，最温暖的祝福送给你：<br />
+                🌟 愿你在新的一岁里，<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;身体健康，每天都元气满满；<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;工作顺利，所有的努力都有回报；<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;天天开心，每一个日子都闪闪发光。<br />
+                <br />
+                💖 愿你的笑容永远像今天一样灿烂，<br />
+                🎈 又长大一岁啦，愿所有的美好都如期而至！<br />
+                <br />
+                
+            </div>
+        </div>
+
+
+        <div class="footer-info">
+            <div class="signature">
+                💌 <span spellcheck="false">爱你的老公</span>
+            </div>
+            <div class="date">
+                📅 <span spellcheck="false">2026.09.08</span>
+            </div>
+        </div>
+
+        <div class="bottom-deco">
+            ♡ ❀ ♡ ❀ ♡
+        </div>
+
+    </div>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            //  1. 漂浮粒子
+            // ============================================================
+            const particlesContainer = document.getElementById('particles');
+            const emojis = ['❤️', '🌹', '💕', '🌸', '✨', '🦋', '🌷', '💫', '🌺', '💖', '🌙', '🍃'];
+            const particleCount = 22;
+
+            function createParticle() {
+                const el = document.createElement('div');
+                el.classList.add('particle');
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                const size = 18 + Math.random() * 24;
+                el.style.fontSize = size + 'px';
+                el.style.left = Math.random() * 100 + '%';
+                const duration = 14 + Math.random() * 20;
+                el.style.animationDuration = duration + 's';
+                el.style.animationDelay = Math.random() * 20 + 's';
+                el.style.opacity = 0.2 + Math.random() * 0.4;
+                el.style.transform = `rotate(${Math.random() * 360}deg)`;
+                particlesContainer.appendChild(el);
+            }
+            for (let i = 0; i < particleCount; i++) {
+                createParticle();
+            }
+
+            // ============================================================
+            //  2. contenteditable 占位符处理
+            // ============================================================
+            document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                const checkAndClean = () => {
+                    const text = el.innerText.trim();
+                    if (text === '' || text === '\n' || text === '\u200B') {
+                        el.innerHTML = '';
+                    }
+                };
+                checkAndClean();
+                el.addEventListener('input', checkAndClean);
+                el.addEventListener('blur', checkAndClean);
+            });
+
+            // ============================================================
+            //  3. 双击蛋糕惊喜
+            // ============================================================
+            const cake = document.querySelector('.cake-icon');
+            if (cake) {
+                cake.addEventListener('dblclick', function(e) {
+                    const messages = [
+                        '❤️ 老婆，我爱你！',
+                        '🌸 你是我的一切！',
+                        '💖 愿我们永远幸福！',
+                        '🌹 你是我最美的遇见！',
+                        '💕 每天都是情人节！'
+                    ];
+                    const msg = messages[Math.floor(Math.random() * messages.length)];
+                    const toast = document.createElement('div');
+                    toast.textContent = msg;
+                    Object.assign(toast.style, {
+                        position: 'fixed',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%) scale(0.8)',
+                        background: 'rgba(255,240,245,0.95)',
+                        backdropFilter: 'blur(14px)',
+                        padding: '22px 36px',
+                        borderRadius: '40px',
+                        fontSize: '22px',
+                        fontWeight: '600',
+                        color: '#5d3a4b',
+                        boxShadow: '0 24px 64px rgba(255,80,120,0.25)',
+                        border: '1px solid rgba(255,255,255,0.6)',
+                        zIndex: '9999',
+                        opacity: '0',
+                        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        pointerEvents: 'none',
+                        fontFamily: '"PingFang SC","Helvetica Neue",sans-serif',
+                        letterSpacing: '1px',
+                        textAlign: 'center',
+                        maxWidth: '80%',
+                    });
+                    document.body.appendChild(toast);
+                    requestAnimationFrame(() => {
+                        toast.style.opacity = '1';
+                        toast.style.transform = 'translate(-50%, -50%) scale(1)';
+                    });
+                    setTimeout(() => {
+                        toast.style.opacity = '0';
+                        toast.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                        setTimeout(() => toast.remove(), 500);
+                    }, 2200);
+                });
+            }
+
+            // ============================================================
+            //  4. 背景音乐播放器 (使用外部 MP3)
+            // ============================================================
+            const musicControl = document.getElementById('musicControl');
+            const musicIcon = document.getElementById('musicIcon');
+            const audioLoading = document.getElementById('audioLoading');
+
+            // --- 音乐源（可替换为你自己的生日歌链接） ---
+            const MUSIC_URL =
+                'https://music.163.com/outchain/player?type=2&id=2082151352&auto=1&height=66';
+
+            // --- 创建 Audio 元素 ---
+            const audio = new Audio();
+            audio.src = MUSIC_URL;
+            audio.loop = true;
+            audio.preload = 'auto';
+            audio.crossOrigin = 'anonymous';
+
+            let isPlaying = false;
+            let isReady = false;
+
+            // --- 显示加载状态 ---
+            function showLoading(show) {
+                if (show) {
+                    audioLoading.classList.add('show');
+                } else {
+                    audioLoading.classList.remove('show');
+                }
+            }
+
+            // --- 更新按钮状态 ---
+            function updateUI(playing) {
+                if (playing) {
+                    musicIcon.textContent = '🔊';
+                    musicControl.classList.add('playing');
+                } else {
+                    musicIcon.textContent = '🔇';
+                    musicControl.classList.remove('playing');
+                }
+            }
+
+            // --- 尝试播放 ---
+            function playMusic() {
+                if (!isReady) {
+                    showLoading(true);
+                    audio.load(); // 重新加载
+                    audio.play().then(() => {
+                        isReady = true;
+                        isPlaying = true;
+                        showLoading(false);
+                        updateUI(true);
+                    }).catch(err => {
+                        // 自动播放被阻止或加载失败
+                        showLoading(false);
+                        console.warn('音乐播放失败:', err);
+                        // 如果是因为自动播放策略，等待用户点击
+                        if (err.name === 'NotAllowedError') {
+                            // 用户点击按钮时会再次尝试
+                        }
+                    });
+                    return;
+                }
+
+                // 已就绪，直接播放
+                audio.play().then(() => {
+                    isPlaying = true;
+                    updateUI(true);
+                }).catch(err => {
+                    console.warn('播放失败:', err);
+                    // 如果是因为未加载完成，重新加载
+                    if (err.name === 'NotSupportedError' || err.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+                        showLoading(true);
+                        audio.load();
+                        setTimeout(() => {
+                            audio.play().then(() => {
+                                isReady = true;
+                                isPlaying = true;
+                                showLoading(false);
+                                updateUI(true);
+                            }).catch(() => {
+                                showLoading(false);
+                            });
+                        }, 500);
+                    }
+                });
+            }
+
+            // --- 暂停音乐 ---
+            function pauseMusic() {
+                audio.pause();
+                isPlaying = false;
+                updateUI(false);
+            }
+
+            // --- 切换播放/暂停 ---
+            function toggleMusic() {
+                if (isPlaying) {
+                    pauseMusic();
+                } else {
+                    playMusic();
+                }
+            }
+
+            // --- 音乐加载完成 ---
+            audio.addEventListener('canplaythrough', () => {
+                isReady = true;
+                showLoading(false);
+                // 如果当前是播放状态但还没播放，尝试播放
+                if (isPlaying) {
+                    audio.play().catch(() => {});
+                }
+            });
+
+            audio.addEventListener('error', (e) => {
+                console.warn('音频加载错误:', e);
+                showLoading(false);
+                // 如果加载失败，尝试使用备用 Web Audio 合成
+                // 这里不自动切换，让用户知道可能有问题
+            });
+
+            // --- 点击控制按钮 ---
+            musicControl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleMusic();
+            });
+
+            // --- 用户首次点击页面任意位置时尝试自动播放（提升体验） ---
+            // 仅在用户未主动播放过且音乐未就绪时触发
+            let hasUserInteracted = false;
+            document.addEventListener('click', function onFirstClick() {
+                if (!hasUserInteracted) {
+                    hasUserInteracted = true;
+                    // 如果音乐尚未播放，且未就绪，尝试播放
+                    if (!isPlaying && !isReady) {
+                        showLoading(true);
+                        audio.load();
+                        audio.play().then(() => {
+                            isReady = true;
+                            isPlaying = true;
+                            showLoading(false);
+                            updateUI(true);
+                        }).catch(() => {
+                            showLoading(false);
+                            // 用户需要手动点击按钮播放
+                        });
+                    }
+                    // 移除监听，避免重复触发
+                    document.removeEventListener('click', onFirstClick);
+                }
+            });
+
+            // --- 页面可见性变化时，如果音乐正在播放但页面隐藏，暂停（节省资源） ---
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && isPlaying) {
+                    audio.pause();
+                    // 不更新UI，恢复时继续播放
+                } else if (!document.hidden && isPlaying) {
+                    audio.play().catch(() => {});
+                }
+            });
+
+            // --- 页面关闭前暂停 ---
+            window.addEventListener('beforeunload', () => {
+                audio.pause();
+                audio.src = '';
+            });
+
+            // ============================================================
+            //  5. 控制台浪漫彩蛋
+            // ============================================================
+            console.log('%c❤️ 生日快乐，我的爱人！❤️', 'font-size:24px; font-weight:bold; color:#f28b9e;');
+            console.log('%c💕 愿你们永远甜蜜幸福！', 'font-size:16px; color:#b895a3;');
+            console.log('%c🎵 音乐已准备，点击右下角音符播放 ♪', 'font-size:14px; color:#b895a3;');
+
+        })();
+    </script>
+
+</body>
+</html>
